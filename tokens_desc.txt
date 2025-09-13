@@ -9,5 +9,7 @@ MATH_OPERATOR:
 	+ | - | * | /
 REL_OPERATOR:
 	> | >= | < | <= | !=
-ASSIGNMENT:
-	=
+LEFT_PAREN:  
+	(
+RIGHT_PAREN: 
+	)

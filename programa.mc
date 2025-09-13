@@ -1,3 +1,3 @@
-x y soma
-idade
-soma2
+x + y <= soma = 30.
+idade =
+soma2()

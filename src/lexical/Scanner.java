@@ -35,22 +35,60 @@ public class Scanner {
 			
 			switch(state) {
 			case 0:
+				//estado inicial
 				if(isLetter(currentChar)) {
 					content+=currentChar;
 					state = 1;
+				} else if(isMathOperator(currentChar)) {
+					content += currentChar;
+					return new Token(TokenType.MATH_OPERATOR, content);
+				} else if(isAssignmentOperator(currentChar)) {
+					content += currentChar;
+					return new Token(TokenType.ASSIGNMENT, content);
+				} else if(isRelOperator(currentChar)) {
+					content += currentChar;
+					state = 2;
+				} else if(isLeftParen(currentChar)) {
+					content += currentChar;
+					return new Token(TokenType.LEFT_PAREN, content);
+				} else if(isRightParen(currentChar)) {
+					content += currentChar;
+					return new Token(TokenType.RIGHT_PAREN, content);
+				} else if(isDigit(currentChar)) {
+					content += currentChar;
+					state = 3;
 				}
 				break;
 			case 1:
+				//estado para identificadores
 				if(isLetter(currentChar) || isDigit(currentChar)) {
 					content+=currentChar;
 					state = 1;
 				} else {
-					state = 2;
+					back();
+					return new Token(TokenType.IDENTIFIER, content);
 				}
 				break;
 			case 2:
-				back();
-				return new Token(TokenType.IDENTIFIER, content);
+				//estado para operadores relacionais
+				if(currentChar == '=') {
+					content += currentChar;
+				} else {
+					back();
+					return new Token(TokenType.REL_OPERATOR, content);
+				}
+				break;
+			case 3:
+				//estado para numeros
+				if(isDigit(currentChar) || currentChar == '.') {
+					content += currentChar;
+				} else if (content.endsWith(".")) {
+					content = content.substring(0, content.length() - 1);
+				} else {
+					back();
+					return new Token(TokenType.NUMBER, content);
+				}
+				break;
 			}
 		}
 	}
@@ -67,14 +105,26 @@ public class Scanner {
 		return c == '+' || c == '-' || c == '*' || c == '/';
 	}
 	
-	private boolean isRelOperator(char c) {
-		return c == '>' || c == '<' || c == '=' || c == '!';
+	private boolean isAssignmentOperator(char c) {
+		return c == '=';
 	}
-	
+
+	private boolean isRelOperator(char c) {
+		return c == '>' ||  c == '<' || c == '!';
+	}
+
+	private boolean isLeftParen(char c) {
+		return c == '(';
+	}
+
+	private boolean isRightParen(char c) {
+		return c == ')';
+	}
+
 	private char nextChar() {
 		return sourceCode[pos++];
 	}
-	
+
 	private void back() {
 		pos--;
 	}
