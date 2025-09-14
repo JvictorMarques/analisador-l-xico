@@ -5,7 +5,7 @@ import lexical.Token;
 
 public class Main {
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		Scanner sc = new Scanner("programa.mc");
 		Token tk;
 		do {

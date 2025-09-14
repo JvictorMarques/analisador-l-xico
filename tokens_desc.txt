@@ -4,11 +4,14 @@ DIGIT:  0..9
 IDENTIFIER:
 	LETTER(LETTER | DIGIT)*
 NUMBER:
-	DIGIT+
+    INTEGER:
+        DIGIT+
+    FLOAT:
+        (DIGIT*.)?DIGIT+
 MATH_OPERATOR:
 	+ | - | * | /
 REL_OPERATOR:
-	> | >= | < | <= | !=
+	> | >= | < | <= | != | ==
 LEFT_PAREN:  
 	(
 RIGHT_PAREN: 
