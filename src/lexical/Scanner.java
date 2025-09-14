@@ -73,11 +73,11 @@ public class Scanner {
 				//estado para operadores relacionais
 				if(currentChar == '=') {
 					content += currentChar;
+                    return new Token(TokenType.REL_OPERATOR, content);
 				} else {
 					back();
 					return new Token(TokenType.REL_OPERATOR, content);
 				}
-				break;
 			case 3:
 				//estado para numeros
 				if(isDigit(currentChar) || currentChar == '.') {
