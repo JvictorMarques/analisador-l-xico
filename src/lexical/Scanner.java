@@ -10,6 +10,7 @@ import java.util.Map;
 import util.TokenType;
 
 import static lexical.ErrorMessages.ERROR_COMMENT;
+import static lexical.ErrorMessages.ERROR_INVALID_CHAR;
 import static lexical.ErrorMessages.ERROR_NUMBER;
 import static util.TokenType.ALTERNATIVE_ELSE_STATEMENT;
 import static util.TokenType.ASSIGNMENT;
@@ -25,6 +26,8 @@ public class Scanner {
 	private int state;
 	private char[] sourceCode;
 	private int pos;
+    private int line=1;
+    private int column;
 
     private Map<String, TokenType> reservedWords = Map.of(
             "int", INTEGER_DATA_TYPE,
@@ -34,7 +37,7 @@ public class Scanner {
             "else", ALTERNATIVE_ELSE_STATEMENT
     );
 
-    private List<Character> invalidsChar = List.of('@', '`', '´', 'ç', '¨', '°');
+    private List<Character> invalidsChar = List.of('@', '`', '´', 'ç', 'Ç', '¨', '°');
 
 	public Scanner(String filename) {
 		try {
@@ -53,14 +56,18 @@ public class Scanner {
 		
 		while (true) {
             if(isEoF() && (state == 8 || state == 9) ) {
-                throw new LexicalError(ERROR_COMMENT, 1, 1);
+                throw new LexicalError(ERROR_COMMENT, line, column);
             }
 			if(isEoF()) {
 				return null;
 			}
 
 			currentChar = nextChar();
-			
+            if(isEndLine(currentChar)){
+                line++;
+                column=0;
+            }
+
 			switch(state) {
                 case 0:
                     //estado inicial
@@ -95,7 +102,7 @@ public class Scanner {
                         content += currentChar;
                         return new Token(TokenType.RIGHT_PAREN, content);
                     } else if(isInvalidChar(currentChar)){
-                        throw  new Exception("Caracter inválido");
+                        throw new LexicalError(ERROR_INVALID_CHAR, line, column);
                     }
 
                     break;
@@ -139,7 +146,7 @@ public class Scanner {
                         content += currentChar;
                         state= 5;
                     } else {
-                        throw new LexicalError(ERROR_NUMBER, 1, 1);
+                        throw new LexicalError(ERROR_NUMBER, line, column);
                     }
                     break;
                 case 5:
@@ -223,11 +230,16 @@ public class Scanner {
 	}
 
 	private char nextChar() {
+        column ++;
 		return sourceCode[pos++];
 	}
 
 	private void back() {
-		pos--;
+        column--;
+        pos--;
+        if(isEndLine(sourceCode[pos])){
+            line--;
+        }
 	}
 	
 	private boolean isEoF() {
