@@ -4,22 +4,17 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.List;
-import java.util.Map;
 
 import util.TokenType;
 
-import static lexical.ErrorMessages.ERROR_COMMENT;
-import static lexical.ErrorMessages.ERROR_INVALID_CHAR;
-import static lexical.ErrorMessages.ERROR_NUMBER;
-import static util.TokenType.ALTERNATIVE_ELSE_STATEMENT;
+import static lexical.LexicalErrorMessages.ERROR_COMMENT;
+import static lexical.LexicalErrorMessages.ERROR_INVALID_CHAR;
+import static lexical.LexicalErrorMessages.ERROR_NUMBER;
+import static util.InvalidChars.CHARS;
+import static util.ReservedWords.WORDS;
 import static util.TokenType.ASSIGNMENT;
-import static util.TokenType.CONDITIONAL_IF_STATEMENT;
-import static util.TokenType.FLOATING_DATA_TYPE;
-import static util.TokenType.INTEGER_DATA_TYPE;
 import static util.TokenType.MATH_OPERATOR;
 import static util.TokenType.NUMBER_FLOAT;
-import static util.TokenType.PRINT_STATEMENT;
 import static util.TokenType.REL_OPERATOR;
 
 public class Scanner {
@@ -29,15 +24,6 @@ public class Scanner {
     private int line=1;
     private int column;
 
-    private Map<String, TokenType> reservedWords = Map.of(
-            "int", INTEGER_DATA_TYPE,
-            "float", FLOATING_DATA_TYPE,
-            "print", PRINT_STATEMENT,
-            "if", CONDITIONAL_IF_STATEMENT,
-            "else", ALTERNATIVE_ELSE_STATEMENT
-    );
-
-    private List<Character> invalidsChar = List.of('@', '`', '´', 'ç', 'Ç', '¨', '°');
 
 	public Scanner(String filename) {
 		try {
@@ -112,8 +98,8 @@ public class Scanner {
                         content+=currentChar;
                     } else {
                         back();
-                        if(reservedWords.containsKey(content)){
-                            TokenType type = reservedWords.get(content);
+                        if(WORDS.containsKey(content)){
+                            TokenType type = WORDS.get(content);
                             return new Token(type, content);
                         }
                         return new Token(TokenType.IDENTIFIER, content);
@@ -247,7 +233,7 @@ public class Scanner {
 	}
 
     private boolean isEndLine(char c) {
-        return c == '\n' || c == '\r';
+        return c == '\n';
     }
 
     private boolean isCommentLine(char c){
@@ -263,6 +249,6 @@ public class Scanner {
     }
 
     private boolean isInvalidChar(char c){
-        return invalidsChar.contains(c);
+        return CHARS.contains(c);
     }
 }

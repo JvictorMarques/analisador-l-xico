@@ -10,10 +10,11 @@ public enum TokenType {
     LEFT_PAREN,
     RIGHT_PAREN,
 
-    // reserved words
+    // reserved WORDS
     INTEGER_DATA_TYPE,
     FLOATING_DATA_TYPE,
     PRINT_STATEMENT,
     CONDITIONAL_IF_STATEMENT,
     ALTERNATIVE_ELSE_STATEMENT,
+    LOOP_FOR_STATEMENT
 }
