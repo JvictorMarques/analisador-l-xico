@@ -9,7 +9,10 @@ import java.util.Map;
 
 import util.TokenType;
 
+import static lexical.ErrorMessages.ERROR_COMMENT;
+import static lexical.ErrorMessages.ERROR_NUMBER;
 import static util.TokenType.ALTERNATIVE_ELSE_STATEMENT;
+import static util.TokenType.ASSIGNMENT;
 import static util.TokenType.CONDITIONAL_IF_STATEMENT;
 import static util.TokenType.FLOATING_DATA_TYPE;
 import static util.TokenType.INTEGER_DATA_TYPE;
@@ -49,8 +52,8 @@ public class Scanner {
 		state = 0;
 		
 		while (true) {
-            if(isEoF() && state == 7) {
-                throw new Exception("Comentário não terminado");
+            if(isEoF() && (state == 8 || state == 9) ) {
+                throw new LexicalError(ERROR_COMMENT, 1, 1);
             }
 			if(isEoF()) {
 				return null;
@@ -61,24 +64,12 @@ public class Scanner {
 			switch(state) {
                 case 0:
                     //estado inicial
-                    if(isLetter(currentChar)) {
+                    if(isLetter(currentChar) || currentChar == '_') {
                         content+=currentChar;
                         state = 1;
-                    } else if(isMathOperator(currentChar)) {
-                        content += currentChar;
-                        state= 6;
-                    } else if(isAssignmentOperator(currentChar)) {
-                        content += currentChar;
-                        return new Token(TokenType.ASSIGNMENT, content);
                     } else if(isRelOperator(currentChar)) {
                         content += currentChar;
                         state = 2;
-                    } else if(isLeftParen(currentChar)) {
-                        content += currentChar;
-                        return new Token(TokenType.LEFT_PAREN, content);
-                    } else if(isRightParen(currentChar)) {
-                        content += currentChar;
-                        return new Token(TokenType.RIGHT_PAREN, content);
                     } else if(isDigit(currentChar)) {
                         content += currentChar;
                         state = 3;
@@ -87,24 +78,36 @@ public class Scanner {
                         state = 4;
                     } else if(isCommentLine(currentChar)){
                         content += currentChar;
-                        state = 5;
+                        state = 6;
                     } else if(currentChar == '/'){
                         content += currentChar;
-                        state = 6;
+                        state = 7;
+                    } else if(isAssignmentOperator(currentChar)) {
+                        content += currentChar;
+                        state = 10;
+                    } else if(isMathOperator(currentChar)) {
+                        content += currentChar;
+                        return new Token(TokenType.MATH_OPERATOR, content);
+                    } else if(isLeftParen(currentChar)) {
+                        content += currentChar;
+                        return new Token(TokenType.LEFT_PAREN, content);
+                    } else if(isRightParen(currentChar)) {
+                        content += currentChar;
+                        return new Token(TokenType.RIGHT_PAREN, content);
                     } else if(isInvalidChar(currentChar)){
-                        throw  new Exception("Char não reconhecido na linguagem");
+                        throw  new Exception("Caracter inválido");
                     }
 
                     break;
                 case 1:
                     //estado para identificadores
-                    if(isLetter(currentChar) || isDigit(currentChar)) {
+                    if(isLetter(currentChar) || isDigit(currentChar) || currentChar == '_') {
                         content+=currentChar;
-                        state = 1;
                     } else {
                         back();
                         if(reservedWords.containsKey(content)){
-                            throw new Exception("NÃO PODE!! PALAVRA RESERVADA");
+                            TokenType type = reservedWords.get(content);
+                            return new Token(type, content);
                         }
                         return new Token(TokenType.IDENTIFIER, content);
                     }
@@ -134,42 +137,12 @@ public class Scanner {
                     //estado para numeros com ponto flutuante
                     if(isDigit(currentChar)) {
                         content += currentChar;
-                        state= 9;
+                        state= 5;
                     } else {
-                        throw new Exception("Má formação de número com ponto flutuante");
+                        throw new LexicalError(ERROR_NUMBER, 1, 1);
                     }
                     break;
                 case 5:
-                    // estado comentário linha
-                    if(isEndLine(currentChar)){
-                        content = "";
-                        state = 0;
-                    }
-                    break;
-                case 6:
-                    // estado operador matemático
-                    if(isSecondSymbolCommentBlock(currentChar)){
-                        content+= currentChar;
-                        state = 7;
-                    }else{
-                        back();
-                        return new Token(MATH_OPERATOR, content);
-                    }
-                    break;
-                case 7:
-                    // estado comentário bloco (parte 1)
-                    if(isSecondSymbolCommentBlock(currentChar)){
-                        state = 8;
-                    }
-                    break;
-                case 8:
-                    // estado comentário bloco (parte 2)
-                    if (isFirstSymbolCommentBlock(currentChar)){
-                        content = "";
-                        state = 0;
-                    }
-                    break;
-                case 9:
                     // continuação float
                     if(isDigit(currentChar)){
                         content+=currentChar;
@@ -178,6 +151,45 @@ public class Scanner {
                         return new Token(NUMBER_FLOAT, content);
                     }
                     break;
+                case 6:
+                    // estado comentário linha
+                    if(isEndLine(currentChar)){
+                        content = "";
+                        state = 0;
+                    }
+                    break;
+                case 7:
+                    // estado /
+                    if(isSecondSymbolCommentBlock(currentChar)){
+                        content+= currentChar;
+                        state = 8;
+                    }else{
+                        back();
+                        return new Token(MATH_OPERATOR, content);
+                    }
+                    break;
+                case 8:
+                    // estado comentário bloco (parte 1)
+                    if(isSecondSymbolCommentBlock(currentChar)){
+                        state = 9;
+                    }
+                    break;
+                case 9:
+                    // estado comentário bloco (parte 2)
+                    if (isFirstSymbolCommentBlock(currentChar)){
+                        content = "";
+                        state = 0;
+                    }
+                    break;
+                case 10:
+                    // estado =
+                    if(isAssignmentOperator(currentChar)){
+                        content+= currentChar;
+                        return new Token(REL_OPERATOR, content);
+                    }else{
+                        back();
+                        return new Token(ASSIGNMENT, content);
+                    }
             }
 		}
 	}

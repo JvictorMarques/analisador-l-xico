@@ -2,7 +2,7 @@ LETTER: a..z | A..Z
 DIGIT:  0..9
 
 IDENTIFIER:
-	LETTER(LETTER | DIGIT)*
+	(LETTER | _ )(LETTER | DIGIT)*
 NUMBER:
     INTEGER:
         DIGIT+
@@ -12,7 +12,13 @@ MATH_OPERATOR:
 	+ | - | * | /
 REL_OPERATOR:
 	> | >= | < | <= | != | ==
+ASSIGNMENT_OPERATOR:
+    =
 LEFT_PAREN:  
 	(
 RIGHT_PAREN: 
 	)
+COMMENT LINE:
+    #
+COMMENT BLOCK:
+    /**/
