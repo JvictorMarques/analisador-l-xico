@@ -14,6 +14,7 @@ import static util.TokenType.CONDITIONAL_IF_STATEMENT;
 import static util.TokenType.FLOATING_DATA_TYPE;
 import static util.TokenType.INTEGER_DATA_TYPE;
 import static util.TokenType.MATH_OPERATOR;
+import static util.TokenType.NUMBER_FLOAT;
 import static util.TokenType.PRINT_STATEMENT;
 import static util.TokenType.REL_OPERATOR;
 
@@ -54,6 +55,7 @@ public class Scanner {
 			if(isEoF()) {
 				return null;
 			}
+
 			currentChar = nextChar();
 			
 			switch(state) {
@@ -89,6 +91,8 @@ public class Scanner {
                     } else if(currentChar == '/'){
                         content += currentChar;
                         state = 6;
+                    } else if(isInvalidChar(currentChar)){
+                        throw  new Exception("Char não reconhecido na linguagem");
                     }
 
                     break;
@@ -130,11 +134,9 @@ public class Scanner {
                     //estado para numeros com ponto flutuante
                     if(isDigit(currentChar)) {
                         content += currentChar;
-                    } else if(currentChar == '.') {
+                        state= 9;
+                    } else {
                         throw new Exception("Má formação de número com ponto flutuante");
-                    }else{
-                        back();
-                        return new Token(TokenType.NUMBER_FLOAT, content);
                     }
                     break;
                 case 5:
@@ -165,6 +167,15 @@ public class Scanner {
                     if (isFirstSymbolCommentBlock(currentChar)){
                         content = "";
                         state = 0;
+                    }
+                    break;
+                case 9:
+                    // continuação float
+                    if(isDigit(currentChar)){
+                        content+=currentChar;
+                    }else{
+                        back();
+                        return new Token(NUMBER_FLOAT, content);
                     }
                     break;
             }
