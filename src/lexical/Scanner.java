@@ -50,11 +50,6 @@ public class Scanner {
 			}
 
 			currentChar = nextChar();
-            if(isEndLine(currentChar)){
-                line++;
-                column=1;
-            }
-
 			switch(state) {
                 case 0:
                     //estado inicial
@@ -194,6 +189,10 @@ public class Scanner {
                     }else{
                         throw new LexicalError(ERROR_REL_OPERATOR, line, column);
                     }
+            }
+            if(isEndLine(currentChar)){
+                line++;
+                column=0;
             }
 		}
 	}
