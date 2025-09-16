@@ -10,6 +10,7 @@ import util.TokenType;
 import static lexical.LexicalErrorMessages.ERROR_COMMENT;
 import static lexical.LexicalErrorMessages.ERROR_INVALID_CHAR;
 import static lexical.LexicalErrorMessages.ERROR_NUMBER;
+import static lexical.LexicalErrorMessages.ERROR_REL_OPERATOR;
 import static util.InvalidChars.CHARS;
 import static util.ReservedWords.WORDS;
 import static util.TokenType.ASSIGNMENT;
@@ -51,7 +52,7 @@ public class Scanner {
 			currentChar = nextChar();
             if(isEndLine(currentChar)){
                 line++;
-                column=0;
+                column=1;
             }
 
 			switch(state) {
@@ -61,8 +62,8 @@ public class Scanner {
                         content+=currentChar;
                         state = 1;
                     } else if(isRelOperator(currentChar)) {
+                        state= currentChar == '!' ? 11 : 2;
                         content += currentChar;
-                        state = 2;
                     } else if(isDigit(currentChar)) {
                         content += currentChar;
                         state = 3;
@@ -72,7 +73,7 @@ public class Scanner {
                     } else if(isCommentLine(currentChar)){
                         content += currentChar;
                         state = 6;
-                    } else if(currentChar == '/'){
+                    } else if(isFirstSymbolCommentBlock(currentChar)){
                         content += currentChar;
                         state = 7;
                     } else if(isAssignmentOperator(currentChar)) {
@@ -172,6 +173,8 @@ public class Scanner {
                     if (isFirstSymbolCommentBlock(currentChar)){
                         content = "";
                         state = 0;
+                    }else{
+                        state = 8;
                     }
                     break;
                 case 10:
@@ -182,6 +185,14 @@ public class Scanner {
                     }else{
                         back();
                         return new Token(ASSIGNMENT, content);
+                    }
+                case 11:
+                    // estado para o operador !=
+                    if(isAssignmentOperator(currentChar)){
+                        content+= currentChar;
+                        return new Token(REL_OPERATOR, content);
+                    }else{
+                        throw new LexicalError(ERROR_REL_OPERATOR, line, column);
                     }
             }
 		}
@@ -233,7 +244,7 @@ public class Scanner {
 	}
 
     private boolean isEndLine(char c) {
-        return c == '\n';
+        return c == '\n' || c == '\r';
     }
 
     private boolean isCommentLine(char c){
