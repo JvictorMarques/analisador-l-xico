@@ -14,6 +14,9 @@ O projeto é parte de um compilador em desenvolvimento incremental e **possui pe
 │
 ├── src/
 │ ├── lexical/
+│ │ ├── LexicalError.java # Imprime os erros léxicos
+│ │ ├── LexicalErrorMessages.java # Mensagens de erro
+│ │ ├── Scanner.java # Implementação do analisador léxico
 │ │ ├── Scanner.java # Implementação do analisador léxico
 │ │ └── Token.java # Estrutura de dados para representar tokens
 │ │
@@ -21,6 +24,8 @@ O projeto é parte de um compilador em desenvolvimento incremental e **possui pe
 │ │ └── Main.java # Classe principal para execução do compilador
 │ │
 │ └── util/
+│ └── InvalidChars.java # Set de caracteres invalidos
+│ └── ReservedWords.java # Map com as palavras reservadas, e o tipo do identificador delas
 │ └── TokenType.java # Enumeração com os tipos de tokens reconhecidos
 │
 └── README.md # Documentação do projeto
