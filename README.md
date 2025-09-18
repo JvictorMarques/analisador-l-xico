@@ -37,7 +37,8 @@ O projeto é parte de um compilador em desenvolvimento incremental e **possui pe
 
 - **Java 11+** (recomendado: OpenJDK 17 ou superior)  
 - IDE ou editor de texto de sua preferência (IntelliJ, VS Code, Eclipse, etc.)  
-
+> Caso você não tenha o Java instalado na sua máquina, é possível você utilizar o Devcontainer como **JDK**.
+[Documentação](https://code.visualstudio.com/docs/devcontainers/containers)
 ---
 
 ## Compilação e Execução  
