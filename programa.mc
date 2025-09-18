@@ -1,6 +1,5 @@
-#TESTE IDENTIFICADORES
-_xyyy
-_abC
+_post=1.74auvla
+_abC!=1
 ABc
 _
 __TESTE
@@ -32,5 +31,6 @@ TESTE=78
 
 
 #PALAVRAS RESERVADAS
-int=0TEçSTEfloat
-print("ok")
+int=0TESTEfloat
+print("ok")/*teste/**
+

@@ -5,7 +5,8 @@ import lexical.Token;
 
 public class Main {
 	/*
-	* GRUPO
+	* GRUPO:
+	*
 	* DIMAS LIMA DA COSTA
 	* JOÃO VICTOR MARQUES DA SILVA
 	* MARÍLIA SANTOS DO NASCIMENTO

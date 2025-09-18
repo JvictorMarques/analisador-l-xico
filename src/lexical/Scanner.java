@@ -43,13 +43,22 @@ public class Scanner {
 		
 		while (true) {
             if(isEoF() && (state == 8 || state == 9) ) {
-                throw new LexicalError(ERROR_COMMENT, line, column);
+                throw new LexicalError(
+                        ERROR_COMMENT,
+                        line,
+                        column > 0 ? column : 1
+                );
             }
 			if(isEoF()) {
 				return null;
 			}
 
-			currentChar = nextChar();
+            currentChar = nextChar();
+            if(isEndLine(currentChar)){
+                line++;
+                column=0;
+            }
+
 			switch(state) {
                 case 0:
                     //estado inicial
@@ -128,6 +137,7 @@ public class Scanner {
                         content += currentChar;
                         state= 5;
                     } else {
+                        back();
                         throw new LexicalError(ERROR_NUMBER, line, column);
                     }
                     break;
@@ -187,12 +197,9 @@ public class Scanner {
                         content+= currentChar;
                         return new Token(REL_OPERATOR, content);
                     }else{
+                        back();
                         throw new LexicalError(ERROR_REL_OPERATOR, line, column);
                     }
-            }
-            if(isEndLine(currentChar)){
-                line++;
-                column=0;
             }
 		}
 	}
