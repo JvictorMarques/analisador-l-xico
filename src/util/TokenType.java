@@ -6,7 +6,7 @@ public enum TokenType {
     NUMBER_FLOAT,
     REL_OPERATOR,
     MATH_OPERATOR,
-    ASSIGNMENT,
+    ASSIGNMENT_OPERATOR,
     LEFT_PAREN,
     RIGHT_PAREN,
 

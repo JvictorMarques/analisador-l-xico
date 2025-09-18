@@ -13,7 +13,7 @@ import static lexical.LexicalErrorMessages.ERROR_NUMBER;
 import static lexical.LexicalErrorMessages.ERROR_REL_OPERATOR;
 import static util.InvalidChars.CHARS;
 import static util.ReservedWords.WORDS;
-import static util.TokenType.ASSIGNMENT;
+import static util.TokenType.ASSIGNMENT_OPERATOR;
 import static util.TokenType.MATH_OPERATOR;
 import static util.TokenType.NUMBER_FLOAT;
 import static util.TokenType.REL_OPERATOR;
@@ -189,7 +189,7 @@ public class Scanner {
                         return new Token(REL_OPERATOR, content);
                     }else{
                         back();
-                        return new Token(ASSIGNMENT, content);
+                        return new Token(ASSIGNMENT_OPERATOR, content);
                     }
                 case 11:
                     // estado para o operador !=

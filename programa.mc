@@ -1,36 +1,6 @@
-_post=1.74auvla
-_abC!=1
-ABc
-_
-__TESTE
-x+2+teste34
-
-#TESTE OPERADORES METAMETICOS
-/5
-+5
-x*9
-0-9-x
-
-#TESTE ASSIGNMENT
-TESTE=78
-9==0soma=9
-
-#TESTE OPERADOR RELACIONAL
-5>=9!=0==2<0>9<=8
-
-#TESTE PARENTESE
-=(98)(UBUIB)
-
-#TESTE NUMBER
-
-56.09707
-76.987TESTE
-.9
-8.9.0
-8.8
-
-
-#PALAVRAS RESERVADAS
-int=0TESTEfloat
-print("ok")/*teste/**
-
+int x = 10;
+float y = 3.14;
+/* comentário de múltiplas linhas */
+if (x >= y) {
+    print(x);
+}
