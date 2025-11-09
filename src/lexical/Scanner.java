@@ -158,7 +158,10 @@ public class Scanner {
                     // continuação float
                     if(isDigit(currentChar)){
                         content+=currentChar;
-                    }else{
+                    } else if (currentChar == '.') {
+                        throw new LexicalError(ERROR_NUMBER, line, column);
+                    }
+                    else{
                         back();
                         return new Token(NUMBER_FLOAT, content);
                     }

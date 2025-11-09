@@ -17,14 +17,14 @@ main {
 	if (x > z E y <= z OU x != z) then {
 		temp <- z;
 		z <- x;
-		x <- temp;
+		x <- 1.1.1;
 	}
 	if y > z then {
 		temp <- z;
 		z <- y;
 		y <- temp;
 	}
-	print("Ordem crescente:);
+	print("Ordem crescente:");
 	print(x);
 	print(y);
 	print(z);
