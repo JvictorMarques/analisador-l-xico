@@ -17,7 +17,7 @@ main {
 	if (x > z E y <= z OU x != z) then {
 		temp <- z;
 		z <- x;
-		x <- 1.1.1;
+		x <- temp;
 	}
 	if y > z then {
 		temp <- z;

@@ -9,7 +9,8 @@ import util.TokenType;
 
 import static lexical.LexicalErrorMessages.ERROR_COMMENT;
 import static lexical.LexicalErrorMessages.ERROR_INVALID_CHAR;
-import static lexical.LexicalErrorMessages.ERROR_NUMBER;
+import static lexical.LexicalErrorMessages.ERROR_NUMBER_HAVING_EXTRA_DOT_AFTER_FLOAT;
+import static lexical.LexicalErrorMessages.ERROR_NUMBER_MISSING_NUMBER_AFTER_DOT;
 import static lexical.LexicalErrorMessages.ERROR_REL_OPERATOR; // Qual que era esse erro?
 import static lexical.LexicalErrorMessages.ERROR_STRING;
 import static lexical.LexicalErrorMessages.GENERIC_ERROR;
@@ -151,7 +152,7 @@ public class Scanner {
                         state= 5;
                     } else {
                         back();
-                        throw new LexicalError(ERROR_NUMBER, line, column);
+                        throw new LexicalError(ERROR_NUMBER_MISSING_NUMBER_AFTER_DOT, line, column);
                     }
                     break;
                 case 5:
@@ -159,7 +160,7 @@ public class Scanner {
                     if(isDigit(currentChar)){
                         content+=currentChar;
                     } else if (currentChar == '.') {
-                        throw new LexicalError(ERROR_NUMBER, line, column);
+                        throw new LexicalError(ERROR_NUMBER_HAVING_EXTRA_DOT_AFTER_FLOAT, line, column);
                     }
                     else{
                         back();
