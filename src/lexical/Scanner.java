@@ -68,7 +68,11 @@ public class Scanner {
                         state = 1;
                     } else if(isRelationalOrAssignmentOperator(currentChar)) {
                         content += currentChar;
-                        state= 2;
+                        if(currentChar == '<') {
+                            state = 12;
+                        } else {
+                            state = 13;
+                        }
                     } else if(isDigit(currentChar)) {
                         content += currentChar;
                         state = 3;
@@ -127,15 +131,6 @@ public class Scanner {
                         return new Token(TokenType.IDENTIFIER, content);
                     }
                     break;
-                case 2:
-                    //estado para operadores relacionais
-                    if(currentChar == '<') {
-                        content+= currentChar;
-                        state = 12;
-                    } else {
-                        content+= currentChar;
-                        state = 13;
-                    }
                 case 3:
                     //estado para numeros inteiros
                     if(isDigit(currentChar)) {
@@ -216,27 +211,28 @@ public class Scanner {
                     } else {
                         content += currentChar;
                     }
+                    break;
                 case 12:
-                    // estado para <
+                    // estado para < (pode ser <, <= ou <-)
                     if(currentChar == '=') {
                         content += currentChar;
-                        return new Token(TokenType.REL_OPERATOR, content);
+                        return new Token(TokenType.REL_OPERATOR, content); // <=
                     }
                     else if (currentChar == '-') {
                         content += currentChar;
-                        return new Token(TokenType.ASSIGNMENT_OPERATOR, content);
+                        return new Token(TokenType.ASSIGNMENT_OPERATOR, content); // <-
                     } else {
                         back();
-                        return new Token(TokenType.REL_OPERATOR, content);
+                        return new Token(TokenType.REL_OPERATOR, content); // <
                     }
                 case 13:
-                    // estado para !=, >=
+                    // estado para >, !, = (pode ser >=, >, !=, ==)
                     if(currentChar == '='){
                         content += currentChar;
-                        return new Token(TokenType.REL_OPERATOR, content);
+                        return new Token(TokenType.REL_OPERATOR, content); // >=, !=, ==
                     } else {
                         back();
-                        return new Token(TokenType.REL_OPERATOR, content);
+                        return new Token(TokenType.REL_OPERATOR, content); // >, !
                     }
                 }
             }   
@@ -255,7 +251,7 @@ public class Scanner {
 	}
 	
 	private boolean isRelationalOrAssignmentOperator(char c) {
-		return c == '-' || c == '>' ||  c == '<' || c == '!';
+		return c == '>' ||  c == '<' || c == '!' || c == '=';
 	}
 
 	private boolean isLeftParen(char c) {
