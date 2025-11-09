@@ -10,7 +10,8 @@ import util.TokenType;
 import static lexical.LexicalErrorMessages.ERROR_COMMENT;
 import static lexical.LexicalErrorMessages.ERROR_INVALID_CHAR;
 import static lexical.LexicalErrorMessages.ERROR_NUMBER;
-import static lexical.LexicalErrorMessages.ERROR_REL_OPERATOR;
+import static lexical.LexicalErrorMessages.ERROR_REL_OPERATOR; // Qual que era esse erro?
+import static lexical.LexicalErrorMessages.ERROR_STRING;
 import static lexical.LexicalErrorMessages.GENERIC_ERROR;
 import static util.InvalidChars.CHARS;
 import static util.ReservedWords.WORDS;
@@ -208,6 +209,8 @@ public class Scanner {
                     if(isQuotes(currentChar)){
                         content += currentChar;
                         return new Token(TokenType.STRING, content);
+                    } else if (isEoF()){
+                        throw new LexicalError(ERROR_STRING, line, column);
                     } else {
                         content += currentChar;
                     }

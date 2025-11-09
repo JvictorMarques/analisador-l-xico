@@ -24,7 +24,7 @@ main {
 		z <- y;
 		y <- temp;
 	}
-	print("Ordem crescente:");
+	print("Ordem crescente:);
 	print(x);
 	print(y);
 	print(z);
