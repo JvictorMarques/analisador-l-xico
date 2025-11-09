@@ -11,6 +11,7 @@ import static lexical.LexicalErrorMessages.ERROR_COMMENT;
 import static lexical.LexicalErrorMessages.ERROR_INVALID_CHAR;
 import static lexical.LexicalErrorMessages.ERROR_NUMBER;
 import static lexical.LexicalErrorMessages.ERROR_REL_OPERATOR;
+import static lexical.LexicalErrorMessages.GENERIC_ERROR;
 import static util.InvalidChars.CHARS;
 import static util.ReservedWords.WORDS;
 import static util.TokenType.ASSIGNMENT_OPERATOR;
@@ -65,9 +66,9 @@ public class Scanner {
                     if(isLetter(currentChar) || currentChar == '_') {
                         content+=currentChar;
                         state = 1;
-                    } else if(isRelOperator(currentChar)) {
-                        state= currentChar == '!' ? 11 : 2;
+                    } else if(isRelationalOrAssignmentOperator(currentChar)) {
                         content += currentChar;
+                        state= 2;
                     } else if(isDigit(currentChar)) {
                         content += currentChar;
                         state = 3;
@@ -80,9 +81,6 @@ public class Scanner {
                     } else if(isFirstSymbolCommentBlock(currentChar)){
                         content += currentChar;
                         state = 7;
-                    } else if(isAssignmentOperator(currentChar)) {
-                        content += currentChar;
-                        state = 10;
                     } else if(isMathOperator(currentChar)) {
                         content += currentChar;
                         return new Token(TokenType.MATH_OPERATOR, content);
@@ -92,8 +90,27 @@ public class Scanner {
                     } else if(isRightParen(currentChar)) {
                         content += currentChar;
                         return new Token(TokenType.RIGHT_PAREN, content);
+                    } else if(isLeftBrace(currentChar)) {
+                        content += currentChar;
+                        return new Token(TokenType.LEFT_BRACE, content);
+                    } else if(isRightBrace(currentChar)) {
+                        content += currentChar;
+                        return new Token(TokenType.RIGHT_BRACE, content);
                     } else if(isInvalidChar(currentChar)){
                         throw new LexicalError(ERROR_INVALID_CHAR, line, column);
+                    } else if (isColon(currentChar)) {
+                        content += currentChar;
+                        return new Token(TokenType.COLON, content);
+                    } else if (isSemicolon(currentChar)) {
+                        content += currentChar;
+                        return new Token(TokenType.SEMICOLON, content);
+                    } else if(isQuotes(currentChar)){
+                        content += currentChar;
+                        state = 11;
+                    } else {
+                        if (currentChar != ' ' && currentChar != '\t' && !isEndLine(currentChar)) {
+                            throw new LexicalError(GENERIC_ERROR, line, column);
+                        }
                     }
 
                     break;
@@ -112,12 +129,12 @@ public class Scanner {
                     break;
                 case 2:
                     //estado para operadores relacionais
-                    if(currentChar == '=') {
-                        content += currentChar;
-                        return new Token(TokenType.REL_OPERATOR, content);
+                    if(currentChar == '<') {
+                        content+= currentChar;
+                        state = 12;
                     } else {
-                        back();
-                        return new Token(TokenType.REL_OPERATOR, content);
+                        content+= currentChar;
+                        state = 13;
                     }
                 case 3:
                     //estado para numeros inteiros
@@ -184,7 +201,7 @@ public class Scanner {
                     break;
                 case 10:
                     // estado =
-                    if(isAssignmentOperator(currentChar)){
+                    if(isRelationalOrAssignmentOperator(currentChar)){
                         content+= currentChar;
                         return new Token(REL_OPERATOR, content);
                     }else{
@@ -192,17 +209,38 @@ public class Scanner {
                         return new Token(ASSIGNMENT_OPERATOR, content);
                     }
                 case 11:
-                    // estado para o operador !=
-                    if(isAssignmentOperator(currentChar)){
-                        content+= currentChar;
-                        return new Token(REL_OPERATOR, content);
-                    }else{
-                        back();
-                        throw new LexicalError(ERROR_REL_OPERATOR, line, column);
+                    // estado para fechamento de aspas
+                    if(isQuotes(currentChar)){
+                        content += currentChar;
+                        return new Token(TokenType.STRING, content);
+                    } else {
+                        content += currentChar;
                     }
-            }
-		}
-	}
+                case 12:
+                    // estado para <
+                    if(currentChar == '=') {
+                        content += currentChar;
+                        return new Token(TokenType.REL_OPERATOR, content);
+                    }
+                    else if (currentChar == '-') {
+                        content += currentChar;
+                        return new Token(TokenType.ASSIGNMENT_OPERATOR, content);
+                    } else {
+                        back();
+                        return new Token(TokenType.REL_OPERATOR, content);
+                    }
+                case 13:
+                    // estado para !=, >=
+                    if(currentChar == '='){
+                        content += currentChar;
+                        return new Token(TokenType.REL_OPERATOR, content);
+                    } else {
+                        back();
+                        return new Token(TokenType.REL_OPERATOR, content);
+                    }
+                }
+            }   
+        }
 	
 	private boolean isLetter(char c) {
 		return (c>='a' && c <= 'z') || (c>='A' && c <= 'Z');		
@@ -216,12 +254,8 @@ public class Scanner {
 		return c == '+' || c == '-' || c == '*' || c == '/';
 	}
 	
-	private boolean isAssignmentOperator(char c) {
-		return c == '=';
-	}
-
-	private boolean isRelOperator(char c) {
-		return c == '>' ||  c == '<' || c == '!';
+	private boolean isRelationalOrAssignmentOperator(char c) {
+		return c == '-' || c == '>' ||  c == '<' || c == '!';
 	}
 
 	private boolean isLeftParen(char c) {
@@ -231,6 +265,14 @@ public class Scanner {
 	private boolean isRightParen(char c) {
 		return c == ')';
 	}
+
+    private boolean isLeftBrace(char c) {
+        return c == '{';
+    }
+
+	private boolean isRightBrace(char c) {
+        return c == '}';
+    }
 
 	private char nextChar() {
         column ++;
@@ -263,6 +305,18 @@ public class Scanner {
 
     private boolean isSecondSymbolCommentBlock(char c){
         return c == '*';
+    }
+
+    private boolean isColon(char c){
+        return c == ':';
+    }
+
+    private boolean isSemicolon(char c){
+        return c == ';';
+    }
+
+    private boolean isQuotes(char c){
+        return c == '"';
     }
 
     private boolean isInvalidChar(char c){
