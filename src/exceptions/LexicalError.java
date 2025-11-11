@@ -1,4 +1,4 @@
-package lexical;
+package exceptions;
 
 public class LexicalError extends RuntimeException {
     private int line;

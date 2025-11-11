@@ -14,8 +14,8 @@ public enum TokenType {
     COLON,
     SEMICOLON,
     STRING,
-
-    // reserved WORDS
+    AND_OPERATOR,
+    OR_OPERATOR,
     INTEGER_DATA_TYPE,
     FLOATING_DATA_TYPE,
     PRINT_STATEMENT,
@@ -25,5 +25,5 @@ public enum TokenType {
     LOOP_FOR_STATEMENT,
     DO_STATEMENT,
     MAIN_FUNCTION,
-    VARIABLE_DECLARATION
+    VARIABLE_DECLARATION,
 }

@@ -5,6 +5,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import exceptions.LexicalError;
 import util.TokenType;
 
 import static lexical.LexicalErrorMessages.ERROR_COMMENT;

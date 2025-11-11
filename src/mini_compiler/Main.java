@@ -1,7 +1,9 @@
 package mini_compiler;
 
+import exceptions.SyntacticException;
 import lexical.Scanner;
 import lexical.Token;
+import syntactic.Parser;
 
 public class Main {
 	/*
@@ -13,13 +15,16 @@ public class Main {
 	* NATHYANE OLIVEIRA
 	* THIAGO VASCONCELOS
 	* */
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
 		Scanner sc = new Scanner("programa.mc");
-		Token tk;
-		do {
-			tk = sc.nextToken();
-			System.out.println(tk);
-		} while (tk!=null);
+		try {
+			Parser parser = new Parser(sc);
+			parser.parse();
+			System.out.println("Compilation successful");
+		} catch (SyntacticException e) {
+			System.out.println("Syntactic error: " + e.getMessage());
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
 	}
-
 }

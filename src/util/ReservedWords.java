@@ -12,18 +12,22 @@ import static util.TokenType.INPUT_STATEMENT;
 import static util.TokenType.DO_STATEMENT;
 import static util.TokenType.MAIN_FUNCTION;
 import static util.TokenType.VARIABLE_DECLARATION;
+import static util.TokenType.AND_OPERATOR;
+import static util.TokenType.OR_OPERATOR;
 
 public class ReservedWords {
-    public static final Map<String, TokenType> WORDS = Map.of(
-            "int", INTEGER_DATA_TYPE,
-            "float", FLOATING_DATA_TYPE,
-            "print", PRINT_STATEMENT,
-            "input", INPUT_STATEMENT,
-            "if", CONDITIONAL_IF_STATEMENT,
-            "else", ALTERNATIVE_ELSE_STATEMENT,
-            "for", LOOP_FOR_STATEMENT,
-            "then", DO_STATEMENT,
-            "main", MAIN_FUNCTION,
-            "var", VARIABLE_DECLARATION
+    public static final Map<String, TokenType> WORDS = Map.ofEntries(
+            Map.entry("int", INTEGER_DATA_TYPE),
+            Map.entry("float", FLOATING_DATA_TYPE),
+            Map.entry("print", PRINT_STATEMENT),
+            Map.entry("input", INPUT_STATEMENT),
+            Map.entry("if", CONDITIONAL_IF_STATEMENT),
+            Map.entry("else", ALTERNATIVE_ELSE_STATEMENT),
+            Map.entry("for", LOOP_FOR_STATEMENT),
+            Map.entry("then", DO_STATEMENT),
+            Map.entry("main", MAIN_FUNCTION),
+            Map.entry("var", VARIABLE_DECLARATION),
+            Map.entry("E", AND_OPERATOR),
+            Map.entry("OU", OR_OPERATOR)
     );
 }
