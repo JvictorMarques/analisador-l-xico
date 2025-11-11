@@ -17,9 +17,9 @@ public class Parser {
 	
 	public void parse() throws Exception {
 		program();
-		if (token != null) {
-			throw new SyntacticException("Unexpected token after program end: " + token.getType() + "(" + token.getText() + ")");
-		}
+		// if (token != null) {
+		// 	throw new SyntacticException("Unexpected token after program end: " + token.getType() + "(" + token.getText() + ")");
+		// }
 	}
 	
 	public void program() throws Exception {
@@ -60,7 +60,7 @@ public class Parser {
 			token.getType() == TokenType.FLOATING_DATA_TYPE)) {
 			token = scanner.nextToken();
 		} else {
-			throw new SyntacticException("Expected type (int or float), found " + 
+			throw new SyntacticException("Esperando um (int ou float), porém foi encontrado " + 
 			(token != null ? token.getType() + "(" + token.getText() + ")" : "EOF"));
 		}
 	}
@@ -225,13 +225,13 @@ public class Parser {
 	
 	private void match(TokenType expectedType) throws Exception {
 		if (token == null) {
-			throw new SyntacticException("Expected " + expectedType + ", but reached end of file");
+			throw new SyntacticException("Esperando " + expectedType + ", mas não foi encontrado");
 		}
 		
 		if (token.getType() == expectedType) {
 			token = scanner.nextToken();
 		} else {
-			throw new SyntacticException("Expected " + expectedType + ", found " + 
+			throw new SyntacticException("Esperando " + expectedType + ", mas foi encontrado " + 
 			token.getType() + "(" + token.getText() + ")");
 		}
 	}

@@ -21,8 +21,6 @@ public class Main {
 			Parser parser = new Parser(sc);
 			parser.parse();
 			System.out.println("Compilation successful");
-		} catch (SyntacticException e) {
-			System.out.println("Syntactic error: " + e.getMessage());
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
